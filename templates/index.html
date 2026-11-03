@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robô do Brick - Painel de Controle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0f1d;
+      --card-bg: rgba(18, 26, 47, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-hover: rgba(59, 130, 246, 0.4);
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.35);
+      --primary-hover: #2563eb;
+      --accent-green: #10b981;
+      --accent-green-glow: rgba(16, 185, 129, 0.25);
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-cyan: #06b6d4;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --glass-blur: blur(16px);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(99, 102, 241, 0.05) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px 20px 48px;
+      width: 100%;
+    }
+
+    /* Navbar / Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 8px 20px var(--primary-glow);
+    }
+
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-badge {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-left: 8px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #34d399;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    .btn {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      outline: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px var(--primary-glow);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 12px;
+      border-radius: 8px;
+    }
+
+    /* Barra de Acesso Remoto (Wi-Fi / Celular) */
+    .remote-access-banner {
+      background: linear-gradient(90deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .remote-access-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-muted);
+    }
+
+    .remote-url-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: #60a5fa;
+      background: rgba(59, 130, 246, 0.15);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      cursor: pointer;
+      user-select: all;
+    }
+
+    /* Cartões de Telemetria da Última Captura */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .telemetry-card {
+      background: rgba(18, 26, 47, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: var(--transition);
+    }
+
+    .telemetry-card:hover {
+      border-color: var(--card-border-hover);
+      transform: translateY(-1px);
+    }
+
+    .telemetry-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-dim);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .telemetry-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .telemetry-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      border-color: var(--card-border-hover);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title-icon {
+      font-size: 18px;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      width: 100%;
+      background: rgba(10, 15, 29, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 14px;
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .range-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .range-slider {
+      flex: 1;
+      accent-color: var(--primary);
+      height: 6px;
+      cursor: pointer;
+    }
+
+    .range-val {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: #60a5fa;
+      min-width: 60px;
+      text-align: right;
+    }
+
+    .badge-profit {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Abas de Navegação Feed / Logs */
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .tab-btn.inactive {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--card-border);
+      color: var(--text-muted);
+    }
+
+    .tab-btn.inactive:hover {
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--text-main);
+    }
+
+    /* Oportunidades Feed */
+    .opportunities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 20px;
+      margin-top: 18px;
+    }
+
+    .opportunity-card {
+      background: rgba(10, 15, 29, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    .opportunity-card:hover {
+      border-color: rgba(16, 185, 129, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .opportunity-img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+      background: #0a0f1d;
+    }
+
+    .opportunity-body {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .opportunity-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .opportunity-price {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #34d399;
+      margin-bottom: 12px;
+    }
+
+    .time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Terminal de Logs em Tempo Real */
+    .terminal-container {
+      background: #050811;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      max-height: 520px;
+      overflow-y: auto;
+      color: #cbd5e1;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-top: 14px;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.7);
+    }
+
+    .terminal-line {
+      margin-bottom: 3px;
+    }
+    .log-info { color: #38bdf8; }
+    .log-warn { color: #facc15; }
+    .log-error { color: #f87171; font-weight: bold; }
+    .log-opportunity { color: #4ade80; font-weight: bold; }
+    .log-cycle { color: #c084fc; font-weight: 600; }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      border: 1px solid var(--primary);
+      color: var(--text-main);
+      padding: 14px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <div class="brand-icon">🤖</div>
+        <div>
+          <div style="display: flex; align-items: center;">
+            <h1 class="brand-title">Robô do Brick</h1>
+            <span class="brand-badge">Edição Comercial</span>
+          </div>
+          <p style="font-size: 13px; color: var(--text-dim); margin-top: 2px;">Painel de Controle e Gestão de Garimpo Autônomo</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="status-pill" id="statusPill">
+          <span class="status-dot"></span>
+          <span id="statusText">Verificando...</span>
+        </div>
+        <button class="btn btn-secondary" id="btnExecutarAgora" onclick="executarVarreduraAgora()">
+          ⚡ Varredura Manual
+        </button>
+        <button class="btn btn-primary" id="btnSalvarTudo" onclick="salvarConfiguracoes()">
+          💾 Salvar Alterações
+        </button>
+      </div>
+    </header>
+
+    <!-- Banner de Acesso Remoto no Celular / Wi-Fi e 4G/5G -->
+    <div class="remote-access-banner">
+      <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div class="remote-access-info">
+            <span style="font-size: 18px;">📱</span>
+            <span><b>No mesmo Wi-Fi:</b></span>
+            <span class="remote-url-badge" id="badgeUrlRede" onclick="copiarLinkRede()" title="Clique para copiar">
+              http://carregando...:5000
+            </span>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="copiarLinkRede()">
+            📋 Copiar Wi-Fi
+          </button>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;">
+          <div class="remote-access-info">
+            <span style="font-size: 18px;">🌐</span>
+            <span><b>Fora de casa (4G/5G na rua/trabalho):</b></span>
+            <span class="remote-url-badge" id="badgeUrlPublica" onclick="copiarLinkPublico()" style="color: var(--text-dim);">
+              Abra 'Compartilhar_Na_Internet.bat' para ativar
+            </span>
+          </div>
+          <button class="btn btn-primary btn-sm" id="btnCopiarPublico" onclick="copiarLinkPublico()" style="display: none;">
+            📋 Copiar Link 4G/5G
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards de Telemetria da Última Captura -->
+    <div class="telemetry-grid">
+      <div class="telemetry-card">
+        <div class="telemetry-label">🕒 Última Captura</div>
+        <div class="telemetry-value" id="telemHora">--:--:--</div>
+        <div class="telemetry-sub" id="telemData">Aguardando ciclo</div>
+      </div>
+      <div class="telemetry-card">
+        <div class="telemetry-label">📦 Anúncios Coletados</div>
+        <div class="telemetry-value" id="telemColetados" style="color: #60a5fa;">0</div>
+        <div class="telemetry-sub" id="telemDetRepetidos">0 repetidos | 0 novos</div>
+      </div>
+      <div class="telemetry-card">
+        <div class="telemetry-label">🤖 Avaliados pela IA</div>
+        <div class="telemetry-value" id="telemAvaliados" style="color: #38bdf8;">0</div>
+        <div class="telemetry-sub" id="telemIgnorados">0 preço R$ 0 descartados</div>
+      </div>
+      <div class="telemetry-card">
+        <div class="telemetry-label">🔥 Pechinchas Reais</div>
+        <div class="telemetry-value" id="telemOportunidades" style="color: #34d399;">0</div>
+        <div class="telemetry-sub">Lucro líquido garantido</div>
+      </div>
+      <div class="telemetry-card">
+        <div class="telemetry-label">⏱️ Próxima Varredura</div>
+        <div class="telemetry-value" id="telemProxima">--:--:--</div>
+        <div class="telemetry-sub" id="telemIntervalo">Rotina Inteligente</div>
+      </div>
+    </div>
+
+    <!-- Cards Grid de Configuração -->
+    <div class="dashboard-grid">
+      <!-- Card Localização -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <span class="card-title-icon">📍</span> Região e Localização
+          </h2>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cidade de Busca (Facebook Marketplace):</label>
+          <input type="text" id="inputCidade" class="form-control" placeholder="Ex: saopaulo, curitiba, fortaleza, rio">
+          <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
+            Digite o nome da cidade sem espaços ou acentos.
+          </small>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Raio de Cobertura:</label>
+          <div class="range-wrap">
+            <input type="range" id="inputRaio" class="range-slider" min="10" max="150" step="5" value="50" oninput="atualizarLabelRaio(this.value)">
+            <span class="range-val" id="lblRaio">50 km</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Categoria de Busca:</label>
+          <select id="selectCategoria" class="form-control">
+            <option value="electronics">Eletrônicos e Celulares (electronics)</option>
+            <option value="computers">Computadores e Informática (computers)</option>
+            <option value="video-games">Videogames e Consoles (video-games)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Card Notificações & Inteligência Artificial -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <span class="card-title-icon">⚡</span> Telegram & Inteligência Artificial
+          </h2>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telegram Bot Token:</label>
+          <input type="password" id="inputTelegramToken" class="form-control" placeholder="Ex: 7123456789:AAFlkjhsdf89234...">
+        </div>
+        <div class="form-group">
+          <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+              <label class="form-label">Telegram Chat ID Pessoal:</label>
+              <input type="text" id="inputTelegramChatId" class="form-control" placeholder="Ex: 123456789">
+            </div>
+            <div style="display: flex; align-items: flex-end;">
+              <button class="btn btn-secondary" onclick="testarTelegram()" style="height: 44px;">
+                📲 Testar Alerta
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Google Gemini API Key (Grátis):</label>
+          <input type="password" id="inputGeminiKey" class="form-control" placeholder="Obtida gratuitamente no Google AI Studio">
+        </div>
+      </div>
+    </div>
+
+    <!-- Critérios de Arbitragem Autônoma -->
+    <div class="card" style="margin-bottom: 28px;">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">
+            <span class="card-title-icon">🧠</span> Critérios de Arbitragem Autônoma (Giro Rápido)
+          </h2>
+          <p style="font-size: 13px; color: var(--text-dim); margin-top: 2px;">
+            O robô pesquisa o preço médio na internet e calcula o preço de liquidação imediata para lucrar sem travar capital.
+          </p>
+        </div>
+        <span class="badge-profit" style="font-size: 13px; padding: 6px 12px;">Modo Autônomo Ativo</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 10px;">
+        <div class="form-group">
+          <label class="form-label">💰 Lucro Mínimo Esperado (R$):</label>
+          <input type="number" id="inputMargemMinima" class="form-control" value="250" step="50" placeholder="Ex: 250.00">
+          <small style="color: var(--text-dim); font-size: 11px;">Alerta apenas se o lucro líquido no bolso for maior.</small>
+        </div>
+        <div class="form-group">
+          <label class="form-label">⚡ Desconto Giro Rápido (R$):</label>
+          <input type="number" id="inputDescontoGiro" class="form-control" value="150" step="25" placeholder="Ex: 150.00">
+          <small style="color: var(--text-dim); font-size: 11px;">Subtraído da média para vender em 24h a 48h.</small>
+        </div>
+        <div class="form-group">
+          <label class="form-label">📉 Desconto Mínimo vs Mercado (%):</label>
+          <input type="number" id="inputDescontoMinimo" class="form-control" value="20" min="5" max="80" step="5" placeholder="Ex: 20%">
+          <small style="color: var(--text-dim); font-size: 11px;">Ex: Pelo menos 20% abaixo dos concorrentes.</small>
+        </div>
+        <div class="form-group" style="display: flex; flex-direction: column; justify-content: center;">
+          <label class="form-label">🛡️ Condição do Produto:</label>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+            <input type="checkbox" id="checkAceitaAvaria" style="width: 18px; height: 18px; accent-color: var(--primary);">
+            <label for="checkAceitaAvaria" style="font-size: 13px; color: var(--text-main); cursor: pointer;">
+              Aceitar produtos com avaria (para conserto/peças)
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seção de Feeds e Logs do Sistema -->
+    <div class="card">
+      <div class="card-header" style="flex-wrap: wrap; gap: 12px;">
+        <div class="nav-tabs">
+          <button class="tab-btn active" id="tabBtnOportunidades" onclick="alternarAba('oportunidades')">
+            🔥 Oportunidades Reais (<span id="badgeCountOportunidades">0</span>)
+          </button>
+          <button class="tab-btn inactive" id="tabBtnEscaneados" onclick="alternarAba('escaneados')">
+            📡 Todos os Anúncios (<span id="badgeCountEscaneados">0</span>)
+          </button>
+          <button class="tab-btn inactive" id="tabBtnLogs" onclick="alternarAba('logs')">
+            🪵 Registros / Logs em Tempo Real
+          </button>
+        </div>
+        <span style="font-size: 12px; color: var(--text-dim);" id="statusUltimaVarredura">Monitoramento Contínuo Ativo</span>
+      </div>
+
+      <!-- Área de Anúncios (Feed) -->
+      <div id="secaoFeed">
+        <div class="opportunities-grid" id="gridOportunidades">
+          <!-- Inserido dinamicamente via JS -->
+        </div>
+      </div>
+
+      <!-- Área de Logs em Tempo Real -->
+      <div id="secaoLogs" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 13px; color: var(--text-muted);">Terminal do Robô (Últimas 100 linhas):</span>
+            <label style="font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="checkAutoLogs" checked style="accent-color: var(--primary);">
+              Auto-atualizar a cada 5s
+            </label>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="carregarLogs()">
+            🔄 Atualizar Logs Agora
+          </button>
+        </div>
+        <div class="terminal-container" id="terminalLogs">
+          Carregando registros...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de Alerta -->
+  <div class="toast" id="toastMessage"></div>
+
+  <script>
+    let configAtual = {};
+    let abaAtual = "oportunidades";
+    let timerLogs = null;
+    let urlRedeGlobal = "http://localhost:5000";
+    let urlPublicaGlobal = "";
+
+    function showToast(mensagem, cor = "#3b82f6") {
+      const toast = document.getElementById("toastMessage");
+      toast.innerText = mensagem;
+      toast.style.borderColor = cor;
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 4000);
+    }
+
+    function copiarLinkRede() {
+      navigator.clipboard.writeText(urlRedeGlobal).then(() => {
+        showToast("📋 Link copiado! Abra no navegador do seu celular: " + urlRedeGlobal, "var(--accent-green)");
+      }).catch(() => {
+        showToast("Selecione e copie o link: " + urlRedeGlobal, "var(--accent-cyan)");
+      });
+    }
+
+    function copiarLinkPublico() {
+      if (!urlPublicaGlobal) {
+        showToast("Para gerar o link 4G/5G, dê dois cliques em 'Compartilhar_Na_Internet.bat' na pasta do robô!", "var(--accent-amber)");
+        return;
+      }
+      navigator.clipboard.writeText(urlPublicaGlobal).then(() => {
+        showToast("📋 Link 4G/5G copiado! Você pode abrir de qualquer lugar do mundo: " + urlPublicaGlobal, "var(--accent-green)");
+      });
+    }
+
+    function atualizarLabelRaio(val) {
+      document.getElementById("lblRaio").innerText = val + " km";
+    }
+
+    function formatarDataHora(isoString) {
+      if (!isoString) return "";
+      try {
+        const d = new Date(isoString);
+        if (isNaN(d.getTime())) {
+          const parts = isoString.split(" ");
+          return parts.length > 1 ? parts[1] : isoString;
+        }
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      } catch (e) {
+        return isoString;
+      }
+    }
+
+    async function atualizarTelemetria() {
+      try {
+        const res = await fetch("/api/status-ciclo");
+        const data = await res.json();
+
+        if (data.url_rede) {
+          urlRedeGlobal = data.url_rede;
+          document.getElementById("badgeUrlRede").innerText = data.url_rede;
+        }
+
+        if (data.url_publica) {
+          urlPublicaGlobal = data.url_publica;
+          document.getElementById("badgeUrlPublica").innerText = data.url_publica;
+          document.getElementById("badgeUrlPublica").style.color = "#34d399";
+          document.getElementById("btnCopiarPublico").style.display = "inline-flex";
+        } else {
+          urlPublicaGlobal = "";
+          document.getElementById("badgeUrlPublica").innerText = "Abra 'Compartilhar_Na_Internet.bat' para ativar";
+          document.getElementById("badgeUrlPublica").style.color = "var(--text-dim)";
+          document.getElementById("btnCopiarPublico").style.display = "none";
+        }
+
+        // Hora e data da última captura
+        if (data.hora_formatada) {
+          document.getElementById("telemHora").innerText = data.hora_formatada;
+          document.getElementById("telemData").innerText = data.timestamp_formatado || "Hoje";
+        }
+
+        // Coletados e repetidos
+        const coletados = data.total_coletados || 0;
+        const repetidos = data.repetidos || 0;
+        const novos = data.novos_analisados || 0;
+        const ignorados = data.ignorados_preco || 0;
+
+        document.getElementById("telemColetados").innerText = coletados;
+        document.getElementById("telemDetRepetidos").innerText = `${repetidos} repetidos | ${novos} novos`;
+
+        // Avaliados pela IA e descartados
+        document.getElementById("telemAvaliados").innerText = novos;
+        document.getElementById("telemIgnorados").innerText = `${ignorados} descartados (R$ 0/grátis)`;
+
+        // Pechinchas
+        document.getElementById("telemOportunidades").innerText = data.novas_oportunidades || 0;
+
+        // Próxima varredura
+        document.getElementById("telemProxima").innerText = data.proxima_execucao || "Em breve";
+        document.getElementById("telemIntervalo").innerText = data.intervalo_descricao || "Rotina Inteligente";
+
+        // Status pill
+        const statusPill = document.getElementById("statusPill");
+        const statusText = document.getElementById("statusText");
+        if (data.servico_ativo) {
+          statusPill.style.borderColor = "rgba(16, 185, 129, 0.3)";
+          statusPill.style.color = "#34d399";
+          statusText.innerText = `Serviço Ativo (PID: ${data.servico_pid})`;
+        } else {
+          statusPill.style.borderColor = "rgba(245, 158, 11, 0.3)";
+          statusPill.style.color = "#f59e0b";
+          statusText.innerText = "Serviço Aguardando Início";
+        }
+      } catch (e) {
+        console.error("Erro na telemetria:", e);
+      }
+    }
+
+    async function carregarConfiguracoes() {
+      try {
+        const res = await fetch("/api/config");
+        configAtual = await res.json();
+
+        // Localização
+        const loc = configAtual.localizacao || {};
+        document.getElementById("inputCidade").value = loc.cidade || "fortaleza";
+        document.getElementById("inputRaio").value = loc.raio_km || 50;
+        atualizarLabelRaio(loc.raio_km || 50);
+        document.getElementById("selectCategoria").value = loc.categoria || "electronics";
+
+        // Notificações e IA
+        const notif = configAtual.notificacoes || {};
+        document.getElementById("inputTelegramToken").value = notif.telegram_token || "";
+        document.getElementById("inputTelegramChatId").value = notif.telegram_chat_id || "";
+
+        const ia = configAtual.inteligencia_artificial || {};
+        document.getElementById("inputGeminiKey").value = ia.gemini_api_key || "";
+
+        // Critérios de Arbitragem Autônoma
+        const crit = configAtual.criterios_arbitragem || {};
+        document.getElementById("inputMargemMinima").value = crit.margem_minima_reais ?? 250;
+        document.getElementById("inputDescontoGiro").value = crit.desconto_giro_rapido_reais ?? 150;
+        document.getElementById("inputDescontoMinimo").value = crit.desconto_minimo_percentual ?? 20;
+        document.getElementById("checkAceitaAvaria").checked = crit.aceita_avaria ?? false;
+
+        await atualizarTelemetria();
+        carregarFeed();
+      } catch (err) {
+        showToast("Erro ao carregar configurações: " + err, "var(--accent-red)");
+      }
+    }
+
+    async function salvarConfiguracoes() {
+      configAtual.localizacao = {
+        cidade: document.getElementById("inputCidade").value.trim(),
+        raio_km: parseInt(document.getElementById("inputRaio").value),
+        categoria: document.getElementById("selectCategoria").value
+      };
+
+      configAtual.criterios_arbitragem = {
+        margem_minima_reais: parseFloat(document.getElementById("inputMargemMinima").value) || 250,
+        desconto_giro_rapido_reais: parseFloat(document.getElementById("inputDescontoGiro").value) || 150,
+        desconto_minimo_percentual: parseFloat(document.getElementById("inputDescontoMinimo").value) || 20,
+        aceita_avaria: document.getElementById("checkAceitaAvaria").checked
+      };
+
+      configAtual.notificacoes = {
+        telegram_token: document.getElementById("inputTelegramToken").value.trim(),
+        telegram_chat_id: document.getElementById("inputTelegramChatId").value.trim()
+      };
+
+      configAtual.inteligencia_artificial = {
+        gemini_api_key: document.getElementById("inputGeminiKey").value.trim()
+      };
+
+      try {
+        const res = await fetch("/api/config", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(configAtual)
+        });
+        const data = await res.json();
+        if (data.status === "ok") {
+          showToast("✅ Configurações salvas com sucesso!", "var(--accent-green)");
+        } else {
+          showToast("Erro ao salvar: " + data.message, "var(--accent-red)");
+        }
+      } catch (err) {
+        showToast("Falha de comunicação: " + err, "var(--accent-red)");
+      }
+    }
+
+    async function testarTelegram() {
+      const token = document.getElementById("inputTelegramToken").value.trim();
+      const chatId = document.getElementById("inputTelegramChatId").value.trim();
+
+      if (!token || !chatId) {
+        showToast("Preencha o Token e o Chat ID primeiro!", "var(--accent-amber)");
+        return;
+      }
+
+      showToast("Enviando mensagem de teste para seu Telegram...", "var(--primary)");
+
+      try {
+        const res = await fetch("/api/test-telegram", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token, chat_id: chatId })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          showToast("✅ " + data.message, "var(--accent-green)");
+        } else {
+          showToast("⚠️ " + data.message, "var(--accent-red)");
+        }
+      } catch (err) {
+        showToast("Erro no teste: " + err, "var(--accent-red)");
+      }
+    }
+
+    function alternarAba(aba) {
+      abaAtual = aba;
+      const btnOp = document.getElementById("tabBtnOportunidades");
+      const btnEsc = document.getElementById("tabBtnEscaneados");
+      const btnLog = document.getElementById("tabBtnLogs");
+
+      const secaoFeed = document.getElementById("secaoFeed");
+      const secaoLogs = document.getElementById("secaoLogs");
+
+      btnOp.className = "tab-btn " + (aba === "oportunidades" ? "active" : "inactive");
+      btnEsc.className = "tab-btn " + (aba === "escaneados" ? "active" : "inactive");
+      btnLog.className = "tab-btn " + (aba === "logs" ? "active" : "inactive");
+
+      if (aba === "logs") {
+        secaoFeed.style.display = "none";
+        secaoLogs.style.display = "block";
+        carregarLogs();
+      } else {
+        secaoFeed.style.display = "block";
+        secaoLogs.style.display = "none";
+        carregarFeed();
+      }
+    }
+
+    async function carregarLogs() {
+      try {
+        const res = await fetch("/api/logs?linhas=120");
+        const data = await res.json();
+        const terminal = document.getElementById("terminalLogs");
+
+        if (!data.logs || data.logs.length === 0) {
+          terminal.innerHTML = '<div style="color: var(--text-dim);">Nenhum registro encontrado ainda.</div>';
+          return;
+        }
+
+        const linhasHtml = data.logs.map(linha => {
+          let classe = "terminal-line";
+          if (linha.includes("OPORTUNIDADE REAL")) classe += " log-opportunity";
+          else if (linha.includes("[ERROR]") || linha.includes("Exception")) classe += " log-error";
+          else if (linha.includes("[WARNING]")) classe += " log-warn";
+          else if (linha.includes("CICLO") || linha.includes("FIM DO CICLO")) classe += " log-cycle";
+          else if (linha.includes("[INFO]")) classe += " log-info";
+
+          const linhaEscapada = linha.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          return `<div class="${classe}">${linhaEscapada}</div>`;
+        }).join("");
+
+        terminal.innerHTML = linhasHtml;
+        terminal.scrollTop = terminal.scrollHeight;
+      } catch (e) {
+        console.error("Erro ao carregar logs:", e);
+      }
+    }
+
+    async function carregarFeed() {
+      const grid = document.getElementById("gridOportunidades");
+      try {
+        const [resOp, resEsc] = await Promise.all([
+          fetch("/api/oportunidades"),
+          fetch("/api/escaneados")
+        ]);
+        const oportunidades = await resOp.json();
+        const escaneados = await resEsc.json();
+
+        document.getElementById("badgeCountOportunidades").innerText = oportunidades.length;
+        document.getElementById("badgeCountEscaneados").innerText = escaneados.length;
+
+        const listaExibir = abaAtual === "oportunidades" ? oportunidades : escaneados;
+
+        if (listaExibir.length === 0) {
+          if (abaAtual === "oportunidades") {
+            grid.innerHTML = `
+              <div style="grid-column: 1/-1; text-align: center; color: var(--text-dim); padding: 40px; background: rgba(0,0,0,0.2); border-radius: 12px;">
+                <div style="font-size: 28px; margin-bottom: 8px;">🎯</div>
+                <strong>Nenhum dos anúncios recentes bateu os critérios de lucro mínimo ainda.</strong><br>
+                <span style="font-size: 13px;">Clique na aba <em>'Todos os Anúncios'</em> acima para ver os ${escaneados.length} itens reais analisados pelo robô!</span>
+              </div>`;
+          } else {
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-dim); padding: 40px;">Nenhum anúncio escaneado ainda. Execute uma varredura!</div>`;
+          }
+          return;
+        }
+
+        grid.innerHTML = "";
+        listaExibir.forEach(item => {
+          const card = document.createElement("div");
+          card.className = "opportunity-card";
+          const imgHtml = item.url_imagem 
+            ? `<img src="${item.url_imagem}" class="opportunity-img" alt="${item.titulo_bruto}">`
+            : `<div class="opportunity-img" style="display: flex; align-items: center; justify-content: center; color: var(--text-dim);">Sem Foto</div>`;
+
+          const tagHtml = item.eh_oportunidade 
+            ? `<span style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.4); padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;">🔥 OPORTUNIDADE</span>`
+            : `<span style="background: rgba(255, 255, 255, 0.05); color: var(--text-dim); border: 1px solid var(--card-border); padding: 2px 8px; border-radius: 6px; font-size: 11px;">🔍 Escaneado</span>`;
+
+          const tempoFace = item.tempo_anuncio ? `<span class="time-badge">⏱️ ${item.tempo_anuncio}</span>` : '';
+          const horaCaptura = item.data_processamento ? `<span class="time-badge">🕒 Capturado ${item.data_processamento.split(' ')[1] || ''}</span>` : '';
+
+          const modeloDet = item.modelo_detectado ? `<div style="font-size: 12px; color: #60a5fa; margin-top: 4px;">IA: ${item.marca_detectada || ''} ${item.modelo_detectado} ${item.especificacoes ? '(' + item.especificacoes + ')' : ''}</div>` : '';
+
+          let infoMercado = '';
+          if (item.preco_mercado_medio && item.preco_mercado_medio > 0) {
+            const vendaRapidaHtml = item.preco_venda_rapida ? `
+              <div style="display: flex; justify-content: space-between; color: #60a5fa; margin-top: 4px;">
+                <span>Venda Rápida (24h):</span>
+                <strong>R$ ${item.preco_venda_rapida.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong>
+              </div>
+            ` : '';
+
+            const descVendedorHtml = item.descricao_anuncio ? `
+              <div style="color: #94a3b8; font-size: 11px; margin-top: 6px; padding: 6px; background: rgba(255,255,255,0.03); border-radius: 6px; line-height: 1.3;">
+                📝 <b>Vendedor:</b> "${item.descricao_anuncio.substring(0, 130)}${item.descricao_anuncio.length > 130 ? '...' : ''}"
+              </div>
+            ` : '';
+
+            const concorrentesHtml = (item.total_concorrentes_facebook && item.total_concorrentes_facebook > 0) ? `
+              <div style="display: flex; justify-content: space-between; color: var(--text-muted);">
+                <span>👥 Concorrentes no Facebook (${item.total_concorrentes_facebook} anúncios):</span>
+                <strong style="color: var(--text-main);">R$ ${item.preco_mercado_medio.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong>
+              </div>
+              ${item.preco_min_facebook > 0 ? `
+              <div style="display: flex; justify-content: space-between; color: #94a3b8; font-size: 11px; margin-top: 2px;">
+                <span>Menor Preço no Facebook:</span>
+                <span style="color: #cbd5e1;">R$ ${item.preco_min_facebook.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+              </div>
+              ` : ''}
+            ` : `
+              <div style="display: flex; justify-content: space-between; color: var(--text-muted);">
+                <span>Média Concorrentes Estimada:</span>
+                <strong style="color: var(--text-main);">R$ ${item.preco_mercado_medio.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong>
+              </div>
+            `;
+
+            infoMercado = `
+              <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 8px 10px; margin-top: 8px; font-size: 12px;">
+                ${concorrentesHtml}
+                ${vendaRapidaHtml}
+                <div style="display: flex; justify-content: space-between; color: #34d399; margin-top: 4px;">
+                  <span>Lucro Real no Bolso:</span>
+                  <strong>+ R$ ${(item.margem_estimada_reais || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})} (${(item.margem_percentual || 0).toFixed(0)}%)</strong>
+                </div>
+                ${descVendedorHtml}
+                ${item.justificativa ? `<div style="color: var(--text-dim); font-size: 11px; margin-top: 6px; line-height: 1.3;">💡 <i>${item.justificativa}</i></div>` : ''}
+              </div>
+            `;
+          }
+
+          let linksRefHtml = '';
+          let linkOlxCard = '';
+          if (item.links_referencia) {
+            try {
+              const linksArr = typeof item.links_referencia === 'string' ? JSON.parse(item.links_referencia) : item.links_referencia;
+              if (Array.isArray(linksArr) && linksArr.length > 0) {
+                linksRefHtml = `<div style="margin-top: 8px; font-size: 11px; color: var(--text-dim); display: flex; flex-wrap: wrap; gap: 6px;">`;
+                linksArr.forEach(l => {
+                  if (l.includes('olx.com.br')) {
+                    linkOlxCard = l;
+                    linksRefHtml += `<a href="${l}" target="_blank" style="color: #f59e0b; text-decoration: underline; font-size: 11px;">🛒 OLX Ceará</a>`;
+                  } else if (l.includes('facebook.com/marketplace')) {
+                    linksRefHtml += `<a href="${l}" target="_blank" style="color: #60a5fa; text-decoration: underline; font-size: 11px;">👥 Concorrentes Facebook</a>`;
+                  }
+                });
+                linksRefHtml += `</div>`;
+              }
+            } catch(e) {}
+          }
+
+          card.innerHTML = `
+            ${imgHtml}
+            <div class="opportunity-body">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
+                  ${tagHtml}
+                  <div style="display: flex; gap: 4px;">
+                    ${tempoFace}
+                    ${horaCaptura}
+                  </div>
+                </div>
+                <div class="opportunity-title">${item.titulo_bruto}</div>
+                ${modeloDet}
+                <div class="opportunity-price" style="margin-top: 8px;">R$ ${(item.preco_anunciado || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+                ${infoMercado}
+                ${linksRefHtml}
+              </div>
+              <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <a href="${item.url_anuncio}" target="_blank" class="btn btn-secondary btn-sm" style="flex: 1; text-decoration: none; text-align: center;">
+                  👉 Facebook
+                </a>
+                ${linkOlxCard ? `
+                  <a href="${linkOlxCard}" target="_blank" class="btn btn-secondary btn-sm" style="flex: 1; text-decoration: none; text-align: center; color: #f59e0b; border-color: rgba(245,158,11,0.3);">
+                    🛒 OLX Ceará
+                  </a>
+                ` : ''}
+              </div>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      } catch (err) {
+        grid.innerHTML = `<div style="color: var(--accent-red); padding: 20px;">Erro ao carregar anúncios: ${err}</div>`;
+      }
+    }
+
+    async function executarVarreduraAgora() {
+      const btn = document.getElementById("btnExecutarAgora");
+      btn.disabled = true;
+      btn.innerText = "⏳ Varrendo (aguarde)...";
+      showToast("Varredura iniciada! O robô está abrindo o Marketplace e analisando os anúncios com IA...", "var(--primary)");
+
+      try {
+        const res = await fetch("/api/executar-varredura", { method: "POST" });
+        const data = await res.json();
+        
+        let msg = "";
+        let cor = "var(--primary)";
+        if (data.novas_oportunidades > 0) {
+          msg = `🔥 ${data.novas_oportunidades} nova(s) oportunidade(s) encontrada(s)! Alerta enviado no seu Telegram.`;
+          cor = "var(--accent-green)";
+        } else if (data.ja_avaliados === data.total_coletados && data.total_coletados > 0) {
+          msg = `✅ Varredura concluída! Todos os ${data.total_coletados} anúncios mais recentes do Facebook já constavam no banco de dados.`;
+          cor = "var(--accent-cyan)";
+        } else {
+          msg = `✅ Varredura concluída! ${data.novos_analisados || 0} novo(s) anúncio(s) analisado(s) pela IA. Nenhum atingiu a margem mínima.`;
+          cor = "var(--accent-amber)";
+        }
+
+        const hora = new Date().toLocaleTimeString();
+        document.getElementById("statusUltimaVarredura").innerText = `Última varredura às ${hora}`;
+
+        showToast(msg, cor);
+        await atualizarTelemetria();
+        carregarFeed();
+        if (abaAtual === "logs") carregarLogs();
+      } catch (err) {
+        showToast("Erro na varredura: " + err, "var(--accent-red)");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "⚡ Varredura Manual";
+      }
+    }
+
+    // Inicialização e loops de sincronização em segundo plano
+    window.addEventListener("DOMContentLoaded", () => {
+      carregarConfiguracoes();
+
+      // Atualiza telemetria a cada 10 segundos
+      setInterval(atualizarTelemetria, 10000);
+
+      // Auto-atualização periódica de logs
+      setInterval(() => {
+        if (abaAtual === "logs" && document.getElementById("checkAutoLogs").checked) {
+          carregarLogs();
+        }
+      }, 5000);
+    });
+  </script>
+</body>
+</html>
